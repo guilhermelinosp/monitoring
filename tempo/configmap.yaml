@@ -5,6 +5,7 @@ metadata:
   namespace: monitoring
 data:
   tempo.yaml: |
+    target: all
     server:
       http_listen_port: 3200
     distributor:
@@ -15,9 +16,6 @@ data:
               endpoint: 0.0.0.0:4317
             http:
               endpoint: 0.0.0.0:4318
-    ingester:
-      trace_idle_period: 10s
-      max_block_duration: 5m
     storage:
       trace:
         backend: local
@@ -25,6 +23,3 @@ data:
           path: /var/tempo/traces
         wal:
           path: /var/tempo/wal
-
-# Actually just delete the pods after push
-git add -A && git commit -m "fix: tempo config for v3, force restart" && git push 2>&1 | tail -2
