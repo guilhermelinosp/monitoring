@@ -33,7 +33,7 @@ resources:
   - loki/statefulset.yaml
   - loki/service.yaml
   - tempo/configmap.yaml
-  - tempo/deployment.yaml
+  - tempo/statefulset.yaml
   - tempo/service.yaml
   - pyroscope/configmap.yaml
   - pyroscope/statefulset.yaml

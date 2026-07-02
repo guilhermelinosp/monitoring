@@ -51,6 +51,7 @@ spec:
           configMap:
             name: loki-config
   volumeClaimTemplates:
+  storageClassName: longhorn
     - metadata:
         name: storage
       spec:

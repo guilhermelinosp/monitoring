@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: tempo
   namespace: monitoring
@@ -10,6 +10,7 @@ spec:
   selector:
     matchLabels:
       app: tempo
+  serviceName: tempo
   template:
     metadata:
       labels:
@@ -43,5 +44,12 @@ spec:
         - name: config
           configMap:
             name: tempo-config
-        - name: storage
-          emptyDir: {}
+  volumeClaimTemplates:
+    - metadata:
+        name: storage
+      spec:
+        accessModes: [ReadWriteOnce]
+        storageClassName: longhorn
+        resources:
+          requests:
+            storage: 10Gi

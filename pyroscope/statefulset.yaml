@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: pyroscope
-          image: ghcr.io/grafana/pyroscope:2.1.0
+          image: grafana/pyroscope:2.1.0
           args:
             - --config.file=/etc/pyroscope/pyroscope.yaml
           ports:
@@ -43,6 +43,7 @@ spec:
           configMap:
             name: pyroscope-config
   volumeClaimTemplates:
+  storageClassName: longhorn
     - metadata:
         name: storage
       spec:
