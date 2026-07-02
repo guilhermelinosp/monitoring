@@ -1,0 +1,60 @@
+alloy:
+  configMap:
+    create: true
+    content: |
+      logging {
+        level = "warn"
+      }
+
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      discovery.kubernetes "nodes" {
+        role = "node"
+      }
+
+      discovery.kubernetes "services" {
+        role = "service"
+      }
+
+      discovery.kubernetes "endpoints" {
+        role = "endpoints"
+      }
+
+      prometheus.scrape "default" {
+        targets    = discovery.kubernetes.pods.targets
+        forward_to = [prometheus.remote_write.default.receiver]
+      }
+
+      prometheus.remote_write "default" {
+        endpoint {
+          url = "http://prom-kube-prometheus-stack-prometheus.monitoring:9090/api/v1/write"
+        }
+      }
+
+      otelcol.receiver.otlp "default" {
+        output {
+          traces = [otelcol.processor.batch.default.input]
+        }
+      }
+
+      otelcol.processor.batch "default" {
+        output {
+          traces   = [otelcol.exporter.otlp.default.input]
+          logs     = [otelcol.exporter.otlp.default.input]
+          profiles = [otelcol.exporter.otlp.default.input]
+        }
+      }
+
+      otelcol.exporter.otlp "default" {
+        client {
+          endpoint = "tempo.monitoring:4317"
+        }
+      }
+
+      otelcol.exporter.otlp "loki" {
+        client {
+          endpoint = "loki.monitoring:4317"
+        }
+      }
