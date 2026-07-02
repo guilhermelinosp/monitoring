@@ -17,6 +17,9 @@ resources:
   - node-exporter/daemonset.yaml
   - node-exporter/service.yaml
   - prometheus/configmap.yaml
+  - prometheus/serviceaccount.yaml
+  - prometheus/clusterrole.yaml
+  - prometheus/clusterrolebinding.yaml
   - prometheus/pvc.yaml
   - prometheus/statefulset.yaml
   - prometheus/service.yaml
