@@ -18,10 +18,9 @@ spec:
     spec:
       containers:
         - name: pyroscope
-          image: grafana/pyroscope:2.1.0
+          image: ghcr.io/grafana/pyroscope:2.1.0
           args:
             - --config.file=/etc/pyroscope/pyroscope.yaml
-            - --storage-path=/var/pyroscope
           ports:
             - name: http
               containerPort: 4040
