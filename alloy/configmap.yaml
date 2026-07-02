@@ -9,7 +9,7 @@ data:
       level = "warn"
     }
 
-    // === DISCOVERY (para métricas) ===
+    // === DESCOBERTA DE PODS ===
     discovery.kubernetes "pods" {
       role = "pod"
     }
@@ -25,33 +25,16 @@ data:
       }
     }
 
-    // === LOGS → Loki ===
-    // Descobre arquivos de log no host em /var/log/pods/
-    loki.source.file "pods" {
-      targets = [
-        {__path__ = "/var/log/pods/*/*/*.log"},
-        {__path__ = "/var/log/containers/*.log"},
-      ]
-      forward_to    = [loki.process.add_labels.receiver]
-      tail_from_end = true
-    }
-
-    // Adiciona labels úteis aos logs
-    loki.process "add_labels" {
+    // === LOGS → Loki (via Kubernetes API) ===
+    loki.source.kubernetes "all" {
+      targets    = discovery.kubernetes.pods.targets
       forward_to = [loki.write.default.receiver]
-
-      stage.static_labels {
-        values = {
-          cluster = "talos",
-        }
-      }
     }
 
     loki.write "default" {
       endpoint {
         url = "http://loki.monitoring:3100/loki/api/v1/push"
       }
-      // Para não sobrecarregar em ambiente lab
       batch_wait = 5s
     }
 

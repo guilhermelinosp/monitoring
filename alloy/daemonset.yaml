@@ -32,12 +32,6 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /etc/alloy
-            - name: varlog
-              mountPath: /var/log
-              readOnly: true
-            - name: varlibdocker
-              mountPath: /var/lib/docker/containers
-              readOnly: true
           resources:
             requests:
               cpu: 100m
@@ -49,9 +43,3 @@ spec:
         - name: config
           configMap:
             name: alloy-config
-        - name: varlog
-          hostPath:
-            path: /var/log
-        - name: varlibdocker
-          hostPath:
-            path: /var/lib/docker/containers
