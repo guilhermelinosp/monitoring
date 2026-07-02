@@ -14,7 +14,7 @@ data:
         kvstore:
           store: inmemory
       replication_factor: 1
-      path_prefix: /var/loki
+      path_prefix: /tmp/loki
     schema_config:
       configs:
         - from: 2020-10-24
@@ -31,9 +31,9 @@ data:
             store: inmemory
     storage_config:
       tsdb_shipper:
-        active_index_directory: /var/loki/tsdb-shipper-active
-        cache_location: /var/loki/tsdb-shipper-cache
+        active_index_directory: /tmp/loki/tsdb-shipper-active
+        cache_location: /tmp/loki/tsdb-shipper-cache
       filesystem:
-        directory: /var/loki/chunks
+        directory: /tmp/loki/chunks
     querier:
       max_concurrent: 8

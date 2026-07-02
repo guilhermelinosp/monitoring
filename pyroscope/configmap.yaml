@@ -6,4 +6,5 @@ metadata:
 data:
   pyroscope.yaml: |
     storage:
-      path: /var/pyroscope
+      filesystem:
+        path: /var/pyroscope

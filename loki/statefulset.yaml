@@ -32,7 +32,7 @@ spec:
             - name: config
               mountPath: /etc/loki
             - name: storage
-              mountPath: /var/loki
+              mountPath: /tmp/loki
           resources:
             requests:
               cpu: 200m
