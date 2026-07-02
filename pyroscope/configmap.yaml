@@ -5,7 +5,4 @@ metadata:
   namespace: monitoring
 data:
   pyroscope.yaml: |
-    storage:
-      backend: filesystem
-      filesystem:
-        directory: /var/pyroscope
+    target: all
