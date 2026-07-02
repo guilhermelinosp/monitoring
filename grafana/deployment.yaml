@@ -21,7 +21,6 @@ spec:
           env:
             - name: GF_SECURITY_ADMIN_PASSWORD
               value: admin
-              value: grafana-pyroscope-datasource
           ports:
             - name: web
               containerPort: 3000
