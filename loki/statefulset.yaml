@@ -16,12 +16,13 @@ spec:
       labels:
         app: loki
     spec:
+      securityContext:
+        runAsUser: 0
       containers:
         - name: loki
           image: grafana/loki:3.7.3
           args:
             - -config.file=/etc/loki/loki.yaml
-            - -config.expand-env=true
           ports:
             - name: http
               containerPort: 3100
@@ -29,16 +30,11 @@ spec:
               containerPort: 9095
             - name: otlp-grpc
               containerPort: 4317
-          env:
-            - name: CGO_ENABLED
-              value: "0"
           volumeMounts:
             - name: config
               mountPath: /etc/loki
             - name: storage
               mountPath: /var/loki
-          securityContext:
-            runAsUser: 0
           resources:
             requests:
               cpu: 200m
@@ -51,11 +47,11 @@ spec:
           configMap:
             name: loki-config
   volumeClaimTemplates:
-  storageClassName: longhorn
     - metadata:
         name: storage
       spec:
         accessModes: [ReadWriteOnce]
+        storageClassName: longhorn
         resources:
           requests:
             storage: 10Gi

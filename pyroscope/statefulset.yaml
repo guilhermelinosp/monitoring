@@ -16,6 +16,8 @@ spec:
       labels:
         app: pyroscope
     spec:
+      securityContext:
+        runAsUser: 0
       containers:
         - name: pyroscope
           image: grafana/pyroscope:2.1.0
@@ -29,8 +31,6 @@ spec:
               mountPath: /etc/pyroscope
             - name: storage
               mountPath: /var/pyroscope
-          securityContext:
-            runAsUser: 0
           resources:
             requests:
               cpu: 200m
@@ -43,11 +43,11 @@ spec:
           configMap:
             name: pyroscope-config
   volumeClaimTemplates:
-  storageClassName: longhorn
     - metadata:
         name: storage
       spec:
         accessModes: [ReadWriteOnce]
+        storageClassName: longhorn
         resources:
           requests:
             storage: 10Gi
