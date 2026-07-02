@@ -1,0 +1,37 @@
+name: Deploy monitoring stack
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: runner-monitoring
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate values
+        run: |
+          for f in values/*.yaml; do
+            python3 -c "import yaml; yaml.safe_load(open('$f'))" || exit 1
+          done
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: runner-monitoring
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+      - name: Deploy Loki
+        run: helm upgrade --install loki grafana/loki --repo https://grafana.github.io/helm-charts --namespace monitoring --values values/loki.yaml --wait
+      - name: Deploy Prometheus
+        run: helm upgrade --install prom grafana/kube-prometheus-stack --repo https://prometheus-community.github.io/helm-charts --namespace monitoring --values values/prometheus.yaml --wait
+      - name: Deploy Tempo
+        run: helm upgrade --install tempo grafana/tempo --repo https://grafana.github.io/helm-charts --namespace monitoring --values values/tempo.yaml --wait
+      - name: Deploy Pyroscope
+        run: helm upgrade --install pyroscope grafana/pyroscope --repo https://grafana.github.io/helm-charts --namespace monitoring --values values/pyroscope.yaml --wait
+      - name: Deploy Alloy
+        run: helm upgrade --install alloy grafana/alloy --repo https://grafana.github.io/helm-charts --namespace monitoring --values values/alloy.yaml --wait
