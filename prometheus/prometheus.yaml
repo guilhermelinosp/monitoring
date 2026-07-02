@@ -23,6 +23,9 @@ spec:
   enableRemoteWriteReceiver: true
   remoteWrite:
     - url: http://alloy.monitoring:12345/api/v1/write
+  securityContext:
+    runAsUser: 0
+    fsGroup: 0
   storage:
     volumeClaimTemplate:
       spec:
