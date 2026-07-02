@@ -37,11 +37,3 @@ configMapGenerator:
   - name: tempo-config
     files:
       - configs/tempo.yaml
-
-patches:
-  - path: patches/resources/loki-probes.yaml
-  - path: patches/resources/prometheus-probes.yaml
-  - path: patches/resources/pyroscope-probes.yaml
-  - path: patches/resources/tempo-probes.yaml
-  - path: patches/resources/grafana-probes.yaml
-  - path: patches/resources/alloy-probes.yaml

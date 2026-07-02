@@ -31,6 +31,16 @@ spec:
           limits:
             cpu: 500m
             memory: 512Mi
+        livenessProbe:
+          tcpSocket:
+            port: web
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          tcpSocket:
+            port: web
+          initialDelaySeconds: 5
+          periodSeconds: 10
       volumes:
       - name: datasources
         configMap:
