@@ -16,6 +16,8 @@ spec:
       labels:
         app: tempo
     spec:
+      securityContext:
+        runAsUser: 0
       containers:
         - name: tempo
           image: grafana/tempo:2.10.7
