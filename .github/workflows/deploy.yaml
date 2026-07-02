@@ -11,6 +11,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v4
       - name: Validate YAML & kustomize
         run: kubectl kustomize . > /dev/null && echo "✅ Valid"
 
@@ -21,9 +22,6 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Apply CRDs
-        run: kubectl apply --server-side -f https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.92.1/stripped-down-crds.yaml
+      - uses: azure/setup-kubectl@v4
       - name: Apply manifests
         run: kubectl apply -k .
-      - name: Restart operator
-        run: kubectl delete po -n monitoring -l app=prometheus-operator
