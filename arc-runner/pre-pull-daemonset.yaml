@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: pre-pull-runner
+  namespace: arc-actions
+  labels:
+    app: pre-pull-runner
+spec:
+  selector:
+    matchLabels:
+      app: pre-pull-runner
+  template:
+    metadata:
+      labels:
+        app: pre-pull-runner
+    spec:
+      initContainers:
+        - name: arc-runner
+          image: ghcr.io/guilhermelinosp/arc-runner:latest
+          command: ["echo", "cached"]
+        - name: docker
+          image: docker:dind
+          command: ["echo", "cached"]
+        - name: alloy
+          image: grafana/alloy:v1.17.1
+          command: ["echo", "cached"]
+        - name: loki
+          image: grafana/loki:3.7.3
+          command: ["echo", "cached"]
+        - name: prometheus
+          image: prom/prometheus:v3.13.0
+          command: ["echo", "cached"]
+        - name: tempo
+          image: grafana/tempo:3.0.2
+          command: ["echo", "cached"]
+        - name: pyroscope
+          image: grafana/pyroscope:2.1.0
+          command: ["echo", "cached"]
+        - name: grafana
+          image: grafana/grafana:13.1.0
+          command: ["echo", "cached"]
+      containers:
+        - name: pause
+          image: gcr.io/google_containers/pause:latest
