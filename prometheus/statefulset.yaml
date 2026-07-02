@@ -9,7 +9,9 @@ spec:
       app: prometheus
   serviceName: prometheus
   template:
-    metadata: {}
+    metadata:
+      labels:
+        app: prometheus
     spec:
       securityContext:
         runAsUser: 0

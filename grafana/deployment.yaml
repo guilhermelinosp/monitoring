@@ -8,7 +8,9 @@ spec:
     matchLabels:
       app: grafana
   template:
-    metadata: {}
+    metadata:
+      labels:
+        app: grafana
     spec:
       containers:
       - name: grafana

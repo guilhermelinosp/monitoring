@@ -9,7 +9,9 @@ spec:
       app: pyroscope
   serviceName: pyroscope
   template:
-    metadata: {}
+    metadata:
+      labels:
+        app: pyroscope
     spec:
       securityContext:
         runAsUser: 0

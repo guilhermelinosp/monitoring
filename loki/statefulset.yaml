@@ -9,7 +9,9 @@ spec:
       app: loki
   serviceName: loki
   template:
-    metadata: {}
+    metadata:
+      labels:
+        app: loki
     spec:
       securityContext:
         runAsUser: 0

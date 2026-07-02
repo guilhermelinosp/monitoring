@@ -9,7 +9,9 @@ spec:
       app: tempo
   serviceName: tempo
   template:
-    metadata: {}
+    metadata:
+      labels:
+        app: tempo
     spec:
       securityContext:
         runAsUser: 0
