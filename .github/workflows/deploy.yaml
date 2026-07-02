@@ -11,11 +11,10 @@ jobs:
     runs-on: runner-monitoring
     steps:
       - uses: actions/checkout@v4
-      - name: Validate values
+      - name: Validate YAML
         run: |
-          for f in values/*.yaml; do
-            python3 -c "import yaml; yaml.safe_load(open('$f'))" || exit 1
-          done
+          kubectl kustomize . > /dev/null || { echo "kustomize build failed"; exit 1; }
+          echo "✅ Manifests valid"
 
   deploy:
     if: github.ref == 'refs/heads/main'
@@ -23,15 +22,8 @@ jobs:
     runs-on: runner-monitoring
     steps:
       - uses: actions/checkout@v4
-      - name: Install Helm
-        uses: azure/setup-helm@v4
-      - name: Deploy Loki
-        run: helm upgrade --install loki grafana/loki --repo https://grafana.github.io/helm-charts --namespace monitoring --values values/loki.yaml --wait
-      - name: Deploy Prometheus
-        run: helm upgrade --install prom grafana/kube-prometheus-stack --repo https://prometheus-community.github.io/helm-charts --namespace monitoring --values values/prometheus.yaml --wait
-      - name: Deploy Tempo
-        run: helm upgrade --install tempo grafana/tempo --repo https://grafana.github.io/helm-charts --namespace monitoring --values values/tempo.yaml --wait
-      - name: Deploy Pyroscope
-        run: helm upgrade --install pyroscope grafana/pyroscope --repo https://grafana.github.io/helm-charts --namespace monitoring --values values/pyroscope.yaml --wait
-      - name: Deploy Alloy
-        run: helm upgrade --install alloy grafana/alloy --repo https://grafana.github.io/helm-charts --namespace monitoring --values values/alloy.yaml --wait
+      - name: Deploy monitoring stack
+        run: |
+          kubectl apply --server-side -f https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.92.1/stripped-down-crds.yaml
+          kubectl apply -k .
+          echo "✅ Monitoring stack deployed"

@@ -1,0 +1,46 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+resources:
+  - namespace.yaml
+  - prometheus-operator/serviceaccount.yaml
+  - prometheus-operator/clusterrole.yaml
+  - prometheus-operator/clusterrolebinding.yaml
+  - prometheus-operator/deployment.yaml
+  - prometheus-operator/service.yaml
+  - prometheus/serviceaccount.yaml
+  - prometheus/clusterrole.yaml
+  - prometheus/clusterrolebinding.yaml
+  - prometheus/prometheus.yaml
+  - prometheus/service.yaml
+  - grafana/configmap-datasources.yaml
+  - grafana/deployment.yaml
+  - grafana/service.yaml
+  - kube-state-metrics/serviceaccount.yaml
+  - kube-state-metrics/clusterrole.yaml
+  - kube-state-metrics/clusterrolebinding.yaml
+  - kube-state-metrics/deployment.yaml
+  - kube-state-metrics/service.yaml
+  - node-exporter/serviceaccount.yaml
+  - node-exporter/clusterrole.yaml
+  - node-exporter/clusterrolebinding.yaml
+  - node-exporter/daemonset.yaml
+  - node-exporter/service.yaml
+  - alloy/configmap.yaml
+  - alloy/daemonset.yaml
+  - alloy/service.yaml
+  - loki/configmap.yaml
+  - loki/statefulset.yaml
+  - loki/service.yaml
+  - tempo/configmap.yaml
+  - tempo/deployment.yaml
+  - tempo/service.yaml
+  - pyroscope/configmap.yaml
+  - pyroscope/statefulset.yaml
+  - pyroscope/service.yaml
+  - service-monitors/prometheus-operator.yaml
+  - service-monitors/kube-state-metrics.yaml
+  - service-monitors/node-exporter.yaml
+  - service-monitors/loki.yaml
+  - service-monitors/tempo.yaml
+  - service-monitors/alloy.yaml

@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus-operator
+rules:
+  - apiGroups: [monitoring.coreos.com]
+    resources: [alertmanagers, prometheuses, prometheuses/finalizers, alertmanagers/finalizers, servicemonitors, podmonitors, prometheusrules]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [apps]
+    resources: [statefulsets]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [""]
+    resources: [configmaps, secrets, services, serviceaccounts, pods, endpoints, events]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [rbac.authorization.k8s.io]
+    resources: [clusterroles, clusterrolebindings, roles, rolebindings]
+    verbs: [create, delete, get, list, patch, update, watch, escalate, bind]

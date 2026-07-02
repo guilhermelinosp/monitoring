@@ -1,0 +1,32 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prometheus
+  namespace: monitoring
+  labels:
+    app: prometheus
+spec:
+  replicas: 1
+  version: v3.2.1
+  serviceAccountName: prometheus
+  serviceMonitorSelector:
+    matchLabels:
+      app: prometheus
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: 1
+      memory: 4Gi
+  retention: 7d
+  enableRemoteWriteReceiver: true
+  remoteWrite:
+    - url: http://alloy.monitoring:12345/api/v1/write
+  storage:
+    volumeClaimTemplate:
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests:
+            storage: 20Gi

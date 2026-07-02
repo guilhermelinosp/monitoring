@@ -1,6 +1,0 @@
-tempo:
-  storage:
-    trace:
-      backend: local
-      local:
-        path: /var/tempo/traces

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter
+  namespace: monitoring
+  labels:
+    app: node-exporter
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      serviceAccountName: node-exporter
+      hostNetwork: true
+      hostPID: true
+      containers:
+        - name: node-exporter
+          image: quay.io/prometheus/node-exporter:v1.9.1
+          args:
+            - --path.sysfs=/host/sys
+            - --path.rootfs=/host/root
+            - --path.procfs=/host/proc
+            - --no-collector.wifi
+          ports:
+            - name: metrics
+              containerPort: 9100
+          volumeMounts:
+            - name: sys
+              mountPath: /host/sys
+            - name: proc
+              mountPath: /host/proc
+            - name: root
+              mountPath: /host/root
+              mountPropagation: HostToContainer
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+      volumes:
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: root
+          hostPath:
+            path: /

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pyroscope-config
+  namespace: monitoring
+data:
+  pyroscope.yaml: |
+    storage:
+      path: /var/pyroscope
