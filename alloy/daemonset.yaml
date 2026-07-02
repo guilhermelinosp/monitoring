@@ -17,7 +17,7 @@ spec:
         image: grafana/alloy:v1.17.1
         args:
         - run
-        - /etc/alloy/config.alloy
+        - /etc/alloy/alloy.alloy
         - --server.http.listen-addr=0.0.0.0:12345
         ports:
         - name: otlp-grpc
