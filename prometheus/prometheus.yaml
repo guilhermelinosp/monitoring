@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
-  name: prometheus
+  name: storage
   namespace: monitoring
   labels:
     app: prometheus
@@ -28,9 +28,11 @@ spec:
     fsGroup: 0
   storage:
     volumeClaimTemplate:
+      metadata:
+        name: storage
       spec:
         accessModes: [ReadWriteOnce]
         storageClassName: longhorn
         resources:
           requests:
-            storage: 20Gi
+            storage: 10Gi
