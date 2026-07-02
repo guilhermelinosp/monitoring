@@ -34,7 +34,7 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /etc/prometheus
-            - name: storage-prometheus-0
+            - name: storage
               mountPath: /prometheus
           resources:
             requests:
@@ -47,6 +47,12 @@ spec:
         - name: config
           configMap:
             name: prometheus-config
-        - name: storage-prometheus-0
-          persistentVolumeClaim:
-            claimName: storage-prometheus-0
+  volumeClaimTemplates:
+    - metadata:
+        name: storage
+      spec:
+        accessModes: [ReadWriteOnce]
+        storageClassName: longhorn
+        resources:
+          requests:
+            storage: 10Gi

@@ -20,7 +20,6 @@ resources:
   - prometheus/serviceaccount.yaml
   - prometheus/clusterrole.yaml
   - prometheus/clusterrolebinding.yaml
-  - prometheus/pvc.yaml
   - prometheus/statefulset.yaml
   - prometheus/service.yaml
   - pyroscope/configmap.yaml
