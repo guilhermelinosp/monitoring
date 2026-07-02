@@ -35,14 +35,12 @@ spec:
             - name: storage
               mountPath: /var/pyroscope
           livenessProbe:
-            httpGet:
-              path: /ready
+            tcpSocket:
               port: http
             initialDelaySeconds: 15
             periodSeconds: 20
           readinessProbe:
-            httpGet:
-              path: /ready
+            tcpSocket:
               port: http
             initialDelaySeconds: 5
             periodSeconds: 10
