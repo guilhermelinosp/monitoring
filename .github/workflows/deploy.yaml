@@ -1,4 +1,4 @@
-name: Deploy monitoring (raw manifests)
+name: Validate manifests
 
 on:
   push:
@@ -14,14 +14,3 @@ jobs:
       - uses: azure/setup-kubectl@v4
       - name: Validate YAML & kustomize
         run: kubectl kustomize . > /dev/null && echo "✅ Valid"
-
-  deploy:
-    if: github.ref == 'refs/heads/main'
-    needs: validate
-    runs-on: self-hosted
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-      - uses: azure/setup-kubectl@v4
-      - name: Apply manifests
-        run: kubectl apply -k .
