@@ -24,7 +24,7 @@ configMapGenerator:
       - configs/alloy.alloy
   - name: grafana-datasources
     files:
-      - configs/grafana-datasources.yaml
+      - configs/datasources.yaml
   - name: loki-config
     files:
       - configs/loki.yaml
