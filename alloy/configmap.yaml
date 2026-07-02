@@ -8,11 +8,9 @@ data:
     logging {
       level = "warn"
     }
-
     discovery.kubernetes "pods" {
       role = "pod"
     }
-
     prometheus.scrape "default" {
       targets    = discovery.kubernetes.pods.targets
       forward_to = [prometheus.remote_write.default.receiver]
@@ -22,20 +20,16 @@ data:
         url = "http://prometheus.monitoring:9090/api/v1/write"
       }
     }
-
     loki.source.kubernetes "all" {
       targets    = discovery.kubernetes.pods.targets
       forward_to = [loki.process.labels.receiver]
     }
-
     loki.process "labels" {
       forward_to = [loki.write.default.receiver]
-
       stage.regex {
         expression = "^(?P<namespace>[^/]+)/(?P<pod>[^:]+):(?P<container>.+)$"
         source     = "instance"
       }
-
       stage.labels {
         values = {
           namespace = "",
@@ -44,28 +38,8 @@ data:
         }
       }
     }
-
     loki.write "default" {
       endpoint {
         url = "http://loki.monitoring:3100/loki/api/v1/push"
-      }
-    }
-
-    otelcol.receiver.otlp "default" {
-      output {
-        traces = [otelcol.processor.batch.default.input]
-      }
-    }
-    otelcol.processor.batch "default" {
-      output {
-        traces = [otelcol.exporter.otlp.tempo.input]
-      }
-    }
-    otelcol.exporter.otlp "tempo" {
-      client {
-        endpoint = "tempo.monitoring:4317"
-        tls {
-          insecure = true
-        }
       }
     }
