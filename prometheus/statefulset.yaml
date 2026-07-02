@@ -65,18 +65,6 @@ spec:
       spec:
         accessModes: [ReadWriteOnce]
         storageClassName: longhorn
-          livenessProbe:
-            httpGet:
-              path: /-/healthy
-              port: web
-            initialDelaySeconds: 15
-            periodSeconds: 20
-          readinessProbe:
-            httpGet:
-              path: /-/ready
-              port: web
-            initialDelaySeconds: 5
-            periodSeconds: 10
         resources:
           requests:
             storage: 10Gi
