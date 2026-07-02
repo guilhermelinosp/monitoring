@@ -1,24 +1,50 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: monitoring
+labels:
+  - pairs:
+      app.kubernetes.io/managed-by: argocd
+
 resources:
   - namespace.yaml
-  - alloy/configmap.yaml
   - alloy/daemonset.yaml
   - alloy/service.yaml
   - alloy/rbac.yaml
-  - grafana/configmap-datasources.yaml
   - grafana/deployment.yaml
   - grafana/service.yaml
-  - loki/configmap.yaml
   - loki/statefulset.yaml
   - loki/service.yaml
-  - prometheus/configmap.yaml
   - prometheus/statefulset.yaml
   - prometheus/service.yaml
-  - pyroscope/configmap.yaml
   - pyroscope/statefulset.yaml
   - pyroscope/service.yaml
-  - tempo/configmap.yaml
   - tempo/statefulset.yaml
   - tempo/service.yaml
+
+configMapGenerator:
+  - name: alloy-config
+    files:
+      - configs/alloy.alloy
+  - name: grafana-datasources
+    files:
+      - configs/grafana-datasources.yaml
+  - name: loki-config
+    files:
+      - configs/loki.yaml
+  - name: prometheus-config
+    files:
+      - configs/prometheus.yml
+  - name: pyroscope-config
+    files:
+      - configs/pyroscope.yaml
+  - name: tempo-config
+    files:
+      - configs/tempo.yaml
+
+patches:
+  - path: patches/resources/loki-probes.yaml
+  - path: patches/resources/prometheus-probes.yaml
+  - path: patches/resources/pyroscope-probes.yaml
+  - path: patches/resources/tempo-probes.yaml
+  - path: patches/resources/grafana-probes.yaml
+  - path: patches/resources/alloy-probes.yaml
