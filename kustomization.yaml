@@ -14,9 +14,6 @@ resources:
   - loki/statefulset.yaml
   - loki/service.yaml
   - prometheus/configmap.yaml
-  - prometheus/serviceaccount.yaml
-  - prometheus/clusterrole.yaml
-  - prometheus/clusterrolebinding.yaml
   - prometheus/statefulset.yaml
   - prometheus/service.yaml
   - pyroscope/configmap.yaml
