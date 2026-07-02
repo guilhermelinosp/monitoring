@@ -9,6 +9,7 @@ data:
       level = "warn"
     }
 
+    // === DISCOVERY ===
     discovery.kubernetes "pods" {
       role = "pod"
     }
@@ -18,10 +19,8 @@ data:
     discovery.kubernetes "services" {
       role = "service"
     }
-    discovery.kubernetes "endpoints" {
-      role = "endpoints"
-    }
 
+    // === METRICS → Prometheus ===
     prometheus.scrape "default" {
       targets    = discovery.kubernetes.pods.targets
       forward_to = [prometheus.remote_write.default.receiver]
@@ -32,6 +31,19 @@ data:
       }
     }
 
+    // === LOGS → Loki ===
+    loki.source.file "pods" {
+      targets    = discovery.kubernetes.pods.targets
+      forward_to = [loki.write.default.receiver]
+      // Mount /var/log/pods from host
+    }
+    loki.write "default" {
+      endpoint {
+        url = "http://loki.monitoring:3100/loki/api/v1/push"
+      }
+    }
+
+    // === TRACES → Tempo ===
     otelcol.receiver.otlp "default" {
       output {
         traces = [otelcol.processor.batch.default.input]
@@ -40,16 +52,10 @@ data:
     otelcol.processor.batch "default" {
       output {
         traces   = [otelcol.exporter.otlp.tempo.input]
-        logs     = [otelcol.exporter.otlp.loki.input]
       }
     }
     otelcol.exporter.otlp "tempo" {
       client {
         endpoint = "tempo.monitoring:4317"
-      }
-    }
-    otelcol.exporter.otlp "loki" {
-      client {
-        endpoint = "loki.monitoring:4317"
       }
     }

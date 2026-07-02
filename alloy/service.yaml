@@ -18,3 +18,12 @@ spec:
       targetPort: metrics
   selector:
     app: alloy
+EOF
+
+kubectl apply -f alloy/service.yaml 2>&1 | tail -1
+
+git add -A && git commit -m "feat: alloy collects all pod logs via loki" && git push 2>&1 | tail -2
+
+echo ""
+echo "=== Alloy pods ==="
+kubectl get pods -n monitoring -l app=alloy 2>&1

@@ -6,6 +6,7 @@ resources:
   - alloy/configmap.yaml
   - alloy/daemonset.yaml
   - alloy/service.yaml
+  - alloy/rbac.yaml
   - grafana/configmap-datasources.yaml
   - grafana/deployment.yaml
   - grafana/service.yaml
