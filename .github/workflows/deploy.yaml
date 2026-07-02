@@ -1,4 +1,4 @@
-name: Validate manifests
+name: Validate & sync
 
 on:
   push:
@@ -12,5 +12,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: azure/setup-kubectl@v4
-      - name: Validate YAML & kustomize
+      - name: Validate kustomize
         run: kubectl kustomize . > /dev/null && echo "✅ Valid"
+
+  sync:
+    if: github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v4
+      - name: Sync via ArgoCD
+        run: |
+          kubectl patch application -n argocd monitoring --type=merge \
+            -p='{"metadata":{"annotations":{"argocd.argoproj.io/refresh":"hard"}}}'
+          echo "⏳ Waiting for sync..."
+          sleep 10
+          for i in $(seq 1 30); do
+            STATUS=$(kubectl get application -n argocd monitoring -o jsonpath='{.status.sync.status}')
+            HEALTH=$(kubectl get application -n argocd monitoring -o jsonpath='{.status.health.status}')
+            echo "  Sync: $STATUS | Health: $HEALTH"
+            [ "$STATUS" = "Synced" ] && [ "$HEALTH" = "Healthy" ] && break
+            sleep 5
+          done
+          echo "✅ Monitoring synced"
