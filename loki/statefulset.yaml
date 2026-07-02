@@ -35,6 +35,18 @@ spec:
               mountPath: /etc/loki
             - name: storage
               mountPath: /var/loki
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
           resources:
             requests:
               cpu: 200m
@@ -52,6 +64,18 @@ spec:
       spec:
         accessModes: [ReadWriteOnce]
         storageClassName: longhorn
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
         resources:
           requests:
             storage: 10Gi

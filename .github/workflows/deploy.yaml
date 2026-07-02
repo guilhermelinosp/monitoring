@@ -1,4 +1,4 @@
-name: Validate & sync
+name: Validate
 
 on:
   push:
@@ -12,8 +12,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: azure/setup-kubectl@v4
-      - name: Validate kustomize
-        run: kubectl kustomize . > /dev/null && echo "✅ Valid"
+
+      - name: Validate YAML syntax
+        run: |
+          for f in $(find . -name "*.yaml" -not -path "./.github/*"); do
+            python3 -c "import yaml; yaml.safe_load(open('$f'))" 2>/dev/null \
+              && echo "  ✅ $f" \
+              || echo "  ❌ $f"
+          done
+
+      - name: Validate kustomize build
+        run: |
+          kubectl kustomize . > /dev/null && echo "✅ kustomize build OK"
 
   sync:
     if: github.ref == 'refs/heads/main'
@@ -22,15 +32,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: azure/setup-kubectl@v4
-      - name: Sync via ArgoCD
+
+      - name: Trigger ArgoCD sync
         run: |
           kubectl patch application -n argocd monitoring --type=merge \
             -p='{"metadata":{"annotations":{"argocd.argoproj.io/refresh":"hard"}}}'
-          echo "⏳ Waiting for sync..."
-          sleep 10
+          echo "⏳ Aguardando sync..."
           for i in $(seq 1 30); do
-            STATUS=$(kubectl get application -n argocd monitoring -o jsonpath='{.status.sync.status}')
-            HEALTH=$(kubectl get application -n argocd monitoring -o jsonpath='{.status.health.status}')
+            STATUS=$(kubectl get application -n argocd monitoring -o jsonpath='{.status.sync.status}' 2>/dev/null)
+            HEALTH=$(kubectl get application -n argocd monitoring -o jsonpath='{.status.health.status}' 2>/dev/null)
             echo "  Sync: $STATUS | Health: $HEALTH"
             [ "$STATUS" = "Synced" ] && [ "$HEALTH" = "Healthy" ] && break
             sleep 5
