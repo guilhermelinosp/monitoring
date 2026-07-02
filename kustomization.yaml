@@ -27,5 +27,5 @@ resources:
   - pyroscope/statefulset.yaml
   - pyroscope/service.yaml
   - tempo/configmap.yaml
-   - tempo/statefulset.yaml
+  - tempo/statefulset.yaml
   - tempo/service.yaml
