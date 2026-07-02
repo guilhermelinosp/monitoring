@@ -1,4 +1,4 @@
-name: Deploy monitoring stack
+name: Deploy monitoring (raw manifests)
 
 on:
   push:
@@ -11,19 +11,19 @@ jobs:
     runs-on: runner-monitoring
     steps:
       - uses: actions/checkout@v4
-      - name: Validate YAML
-        run: |
-          kubectl kustomize . > /dev/null || { echo "kustomize build failed"; exit 1; }
-          echo "✅ Manifests valid"
+      - name: Validate YAML & kustomize
+        run: kubectl kustomize . > /dev/null && echo "✅ Valid"
 
   deploy:
     if: github.ref == 'refs/heads/main'
     needs: validate
     runs-on: runner-monitoring
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy monitoring stack
-        run: |
-          kubectl apply --server-side -f https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.92.1/stripped-down-crds.yaml
-          kubectl apply -k .
-          echo "✅ Monitoring stack deployed"
+      - name: Apply CRDs
+        run: kubectl apply --server-side -f https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.92.1/stripped-down-crds.yaml
+      - name: Apply manifests
+        run: kubectl apply -k .
+      - name: Restart operator
+        run: kubectl delete po -n monitoring -l app=prometheus-operator
