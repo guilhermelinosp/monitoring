@@ -18,9 +18,6 @@ data:
     ingester:
       trace_idle_period: 10s
       max_block_duration: 5m
-    compactor:
-      compaction:
-        block_retention: 48h
     storage:
       trace:
         backend: local
@@ -28,3 +25,16 @@ data:
           path: /var/tempo/traces
         wal:
           path: /var/tempo/wal
+EOF
+
+# Force restart prometheus and tempo via annotation
+cat >> prometheus/statefulset.yaml << 'EOF'
+
+# Auto restart annotation
+metadata:
+  annotations:
+    rollme: "$(date +%s)"
+EOF
+
+# Actually just delete the pods after push
+git add -A && git commit -m "fix: tempo config for v3, force restart" && git push 2>&1 | tail -2
