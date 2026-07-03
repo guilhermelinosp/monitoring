@@ -30,6 +30,10 @@ discovery.relabel "metrics_filter" {
 // EXTERNAL INGESTION (OTLP)
 // External apps send metrics/logs/traces via OTLP
 // Endpoint: alloy.hellnet.com.br:4318 (HTTP) or :4317 (gRPC)
+//
+// NOTE: OTLP metrics need otelcol.connector.prometheus to convert
+// from OTel format to Prometheus format before remote_write.
+// OTLP logs are not currently routed to Loki (use Loki SDK directly).
 // ═══════════════════════════════════════════
 otelcol.receiver.otlp "external" {
 	grpc {
@@ -45,10 +49,14 @@ otelcol.receiver.otlp "external" {
 	}
 
 	output {
-		metrics = [prometheus.remote_write.default.receiver]
-		logs    = [loki.write.default.receiver]
+		metrics = [otelcol.exporter.prometheus.default.receiver]
 		traces  = [otelcol.exporter.otlp.tempo.receiver]
 	}
+}
+
+// Convert OTel metrics to Prometheus format and forward to remote_write
+otelcol.exporter.prometheus "default" {
+	forward_to = [prometheus.remote_write.default.receiver]
 }
 
 // ═══════════════════════════════════════════
