@@ -13,6 +13,8 @@ spec:
       labels:
         app: tempo
     spec:
+      securityContext:
+        fsGroup: 10001
       containers:
       - name: tempo
         image: grafana/tempo:3.0.2
@@ -20,6 +22,7 @@ spec:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
+          runAsUser: 10001
           runAsNonRoot: true
           seccompProfile:
             type: RuntimeDefault

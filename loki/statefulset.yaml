@@ -13,6 +13,8 @@ spec:
       labels:
         app: loki
     spec:
+      securityContext:
+        fsGroup: 10001
       containers:
       - name: loki
         image: grafana/loki:3.7.3
@@ -20,6 +22,7 @@ spec:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
+          runAsUser: 10001
           runAsNonRoot: true
           seccompProfile:
             type: RuntimeDefault

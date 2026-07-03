@@ -13,6 +13,8 @@ spec:
       labels:
         app: prometheus
     spec:
+      securityContext:
+        fsGroup: 65534
       serviceAccountName: prometheus
       containers:
       - name: prometheus
@@ -21,6 +23,7 @@ spec:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
+          runAsUser: 65534
           runAsNonRoot: true
           seccompProfile:
             type: RuntimeDefault
