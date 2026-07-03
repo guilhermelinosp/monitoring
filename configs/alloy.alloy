@@ -49,8 +49,8 @@ otelcol.receiver.otlp "external" {
 	}
 
 	output {
-		metrics = [otelcol.exporter.prometheus.default.receiver]
-		traces  = [otelcol.exporter.otlp.tempo.receiver]
+		metrics = [otelcol.exporter.prometheus.default]
+		traces  = [otelcol.exporter.otlp.tempo]
 	}
 }
 
