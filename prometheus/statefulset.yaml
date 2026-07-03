@@ -13,13 +13,17 @@ spec:
       labels:
         app: prometheus
     spec:
-      securityContext:
-        runAsUser: 0
-        fsGroup: 0
       serviceAccountName: prometheus
       containers:
       - name: prometheus
         image: prom/prometheus:v3.13.0
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
         args:
         - --config.file=/etc/prometheus/prometheus.yml
         - --storage.tsdb.path=/prometheus

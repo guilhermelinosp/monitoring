@@ -15,6 +15,13 @@ spec:
       containers:
       - name: alloy
         image: grafana/alloy:v1.17.1
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
         args:
         - run
         - /etc/alloy/alloy.alloy

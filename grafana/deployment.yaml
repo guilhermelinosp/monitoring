@@ -15,6 +15,13 @@ spec:
       containers:
       - name: grafana
         image: grafana/grafana:13.1.0
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
         env:
         - name: GF_SECURITY_ADMIN_PASSWORD
           value: admin
@@ -33,12 +40,12 @@ spec:
             memory: 512Mi
         livenessProbe:
           tcpSocket:
-            port: web
+            port: 3000
           initialDelaySeconds: 15
           periodSeconds: 20
         readinessProbe:
           tcpSocket:
-            port: web
+            port: 3000
           initialDelaySeconds: 5
           periodSeconds: 10
       volumes:
