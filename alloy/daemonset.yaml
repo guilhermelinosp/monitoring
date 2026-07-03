@@ -23,6 +23,7 @@ spec:
           runAsNonRoot: true
           seccompProfile:
             type: RuntimeDefault
+        workingDir: /tmp
         args:
         - run
         - /etc/alloy/alloy.alloy
