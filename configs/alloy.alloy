@@ -1,38 +1,140 @@
 logging {
-  level = "warn"
+	level = "warn"
 }
+
+// ═══════════════════════════════════════════
+// DISCOVERY
+// ═══════════════════════════════════════════
 discovery.kubernetes "pods" {
-  role = "pod"
+	role = "pod"
 }
+
+// Filter targets for metrics/profiles: only annotated pods, drop kube-system
+discovery.relabel "metrics_filter" {
+	targets = discovery.kubernetes.pods.targets
+
+	rule {
+		source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
+		regex         = "true"
+		action        = "keep"
+	}
+
+	rule {
+		source_labels = ["__meta_kubernetes_pod_namespace"]
+		regex         = "kube-system"
+		action        = "drop"
+	}
+}
+
+// ═══════════════════════════════════════════
+// EXTERNAL INGESTION (OTLP)
+// External apps send metrics/logs/traces via OTLP
+// Endpoint: alloy.hellnet.com.br:4318 (HTTP) or :4317 (gRPC)
+// ═══════════════════════════════════════════
+otelcol.receiver.otlp "external" {
+	grpc {
+		endpoint = "0.0.0.0:4317"
+	}
+
+	http {
+		endpoint = "0.0.0.0:4318"
+
+		cors {
+			allowed_origins = ["*"]
+		}
+	}
+
+	output {
+		metrics = [prometheus.remote_write.default.receiver]
+		logs    = [loki.write.default.receiver]
+		traces  = [otelcol.exporter.otlp.tempo.receiver]
+	}
+}
+
+// ═══════════════════════════════════════════
+// TRACES → Tempo
+// ═══════════════════════════════════════════
+otelcol.exporter.otlp "tempo" {
+	client {
+		endpoint = "tempo.monitoring:4317"
+
+		tls {
+			insecure = true
+		}
+	}
+}
+
+// ═══════════════════════════════════════════
+// METRICS
+// ═══════════════════════════════════════════
 prometheus.scrape "default" {
-  targets    = discovery.kubernetes.pods.targets
-  forward_to = [prometheus.remote_write.default.receiver]
+	targets         = discovery.relabel.metrics_filter.output
+	forward_to      = [prometheus.remote_write.default.receiver]
+	scrape_interval = "30s"
+	scrape_timeout  = "10s"
+	honor_labels    = true
 }
+
 prometheus.remote_write "default" {
-  endpoint {
-    url = "http://prometheus.monitoring:9090/api/v1/write"
-  }
+	endpoint {
+		url = "http://prometheus.monitoring:9090/api/v1/write"
+	}
 }
+
+// ═══════════════════════════════════════════
+// PROFILES → Pyroscope
+// ═══════════════════════════════════════════
+pyroscope.scrape "default" {
+	targets         = discovery.relabel.metrics_filter.output
+	forward_to      = [pyroscope.write.default.receiver]
+	scrape_interval = "30s"
+	scrape_timeout  = "10s"
+}
+
+pyroscope.write "default" {
+	endpoint {
+		url = "http://pyroscope.monitoring:4040"
+	}
+}
+
+// ═══════════════════════════════════════════
+// LOGS
+// ═══════════════════════════════════════════
 loki.source.kubernetes "all" {
-  targets    = discovery.kubernetes.pods.targets
-  forward_to = [loki.process.labels.receiver]
+	targets    = discovery.kubernetes.pods.targets
+	forward_to = [loki.process.labels.receiver]
 }
+
 loki.process "labels" {
-  forward_to = [loki.write.default.receiver]
-  stage.regex {
-    expression = "^(?P<namespace>[^/]+)/(?P<pod>[^:]+):(?P<container>.+)$"
-    source     = "instance"
-  }
-  stage.labels {
-    values = {
-      namespace = "",
-      pod       = "",
-      container = "",
-    }
-  }
+	forward_to = [loki.write.default.receiver]
+
+	stage.regex {
+		expression = "^(?P<namespace>[^/]+)/(?P<pod>[^:]+):(?P<container>.+)$"
+		source     = "instance"
+	}
+
+	stage.labels {
+		values = {
+			namespace = "",
+			pod       = "",
+			container = "",
+		}
+	}
+
+	stage.static_labels {
+		values = {
+			collector = "alloy",
+		}
+	}
 }
+
 loki.write "default" {
-  endpoint {
-    url = "http://loki.monitoring:3100/loki/api/v1/push"
-  }
+	endpoint {
+		url                 = "http://loki.monitoring:3100/loki/api/v1/push"
+		batch_size          = "1MiB"
+		batch_wait          = "5s"
+		max_backoff_retries = 10
+		min_backoff_period  = "1s"
+		max_backoff_period  = "30s"
+	}
 }

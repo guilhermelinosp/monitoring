@@ -1,3 +1,4 @@
+---
 output: false
 
 pre-commit:
@@ -5,7 +6,7 @@ pre-commit:
   commands:
     yamllint:
       glob: "*.{yaml,yml}"
-      run: yamllint -s {staged_files}
+      run: yamllint {staged_files}
       stage_fixed: false
     kustomize-build:
       run: kustomize build . > /dev/null
@@ -18,6 +19,10 @@ pre-commit:
       glob: "*.{yaml,yml,json,toml,sh}"
       run: |
         ! grep -Ein '(password|secret|token|api_key|private_key)[:=]' {staged_files}
+      stage_fixed: false
+    alloy-validate:
+      glob: "*.alloy"
+      run: alloy validate {staged_files}
       stage_fixed: false
     shellcheck:
       glob: "*.sh"
