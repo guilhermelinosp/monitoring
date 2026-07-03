@@ -20,6 +20,9 @@ resources:
   - tempo/statefulset.yaml
   - tempo/service.yaml
 
+generatorOptions:
+  disableNameSuffixHash: true
+
 configMapGenerator:
   - name: alloy-config
     files:
