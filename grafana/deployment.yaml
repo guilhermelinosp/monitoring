@@ -13,7 +13,7 @@ spec:
         app: grafana
     spec:
       securityContext:
-        fsGroup: 472
+        fsGroup: 10001
       containers:
       - name: grafana
         image: grafana/grafana:13.1.0
@@ -21,7 +21,7 @@ spec:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
-          runAsUser: 472
+          runAsUser: 10001
           runAsNonRoot: true
           seccompProfile:
             type: RuntimeDefault

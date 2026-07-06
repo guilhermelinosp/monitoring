@@ -11,6 +11,8 @@ spec:
       labels:
         app: alloy
     spec:
+      securityContext:
+        fsGroup: 10001
       serviceAccountName: alloy
       containers:
       - name: alloy
