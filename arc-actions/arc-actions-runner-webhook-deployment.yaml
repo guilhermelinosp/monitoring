@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arc-actions-runner-webhook
+  namespace: arc-actions
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arc-actions-runner-webhook
+  template:
+    metadata:
+      labels:
+        app: arc-actions-runner-webhook
+    spec:
+      serviceAccountName: arc-actions-runner-webhook
+      imagePullSecrets:
+        - name: ghcr-pull
+      containers:
+        - name: controller
+          image: ghcr.io/guilhermelinosp/runner-controller:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: WEBHOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: webhook-secret
+                  name: runner-controller-secret
+            - name: NAMESPACE
+              value: arc-actions
+            - name: OWNER
+              value: guilhermelinosp
+            - name: RUNNER_IMAGE
+              value: ghcr.io/guilhermelinosp/arc-runner:latest
+            - name: PORT
+              value: "8080"
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: token
+                  name: gh-token
+            - name: POLL_INTERVAL
+              value: "300"

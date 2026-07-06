@@ -1,0 +1,21 @@
+---
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: runner-arc-runner
+  namespace: arc-actions
+spec:
+  replicas: 1
+  template:
+    spec:
+      repository: guilhermelinosp/arc-runner
+      image: ghcr.io/guilhermelinosp/arc-runner:latest
+      imagePullPolicy: IfNotPresent
+      dockerdWithinRunnerContainer: false
+      resources:
+        limits:
+          cpu: "1"
+          memory: 2Gi
+        requests:
+          cpu: 100m
+          memory: 256Mi
