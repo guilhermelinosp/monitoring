@@ -15,3 +15,4 @@ resources:
   - hra-arc-infra.yaml
   - hra-org.yaml
   - pre-pull-daemonset.yaml
+  - httproute-webhook.yaml
