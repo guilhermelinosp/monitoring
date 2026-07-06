@@ -90,22 +90,6 @@ prometheus.remote_write "default" {
 }
 
 // ═══════════════════════════════════════════
-// PROFILES → Pyroscope
-// ═══════════════════════════════════════════
-pyroscope.scrape "default" {
-	targets         = discovery.relabel.metrics_filter.output
-	forward_to      = [pyroscope.write.default.receiver]
-	scrape_interval = "30s"
-	scrape_timeout  = "10s"
-}
-
-pyroscope.write "default" {
-	endpoint {
-		url = "http://pyroscope.monitoring:4040"
-	}
-}
-
-// ═══════════════════════════════════════════
 // LOGS
 // ═══════════════════════════════════════════
 loki.source.kubernetes "all" {

@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -37,9 +38,6 @@ spec:
           command: ["sh", "-c", "echo cached"]
         - name: tempo
           image: grafana/tempo:3.0.2
-          command: ["sh", "-c", "echo cached"]
-        - name: pyroscope
-          image: grafana/pyroscope:2.1.0
           command: ["sh", "-c", "echo cached"]
       containers:
         - name: pause

@@ -15,8 +15,6 @@ resources:
   - prometheus/rbac.yaml
   - prometheus/statefulset.yaml
   - prometheus/service.yaml
-  - pyroscope/statefulset.yaml
-  - pyroscope/service.yaml
   - tempo/statefulset.yaml
   - tempo/service.yaml
 
@@ -36,9 +34,6 @@ configMapGenerator:
   - name: prometheus-config
     files:
       - configs/prometheus.yml
-  - name: pyroscope-config
-    files:
-      - configs/pyroscope.yaml
   - name: tempo-config
     files:
       - configs/tempo.yaml
