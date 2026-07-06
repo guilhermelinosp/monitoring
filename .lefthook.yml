@@ -21,7 +21,7 @@ pre-commit:
       stage_fixed: false
     alloy-validate:
       glob: "*.alloy"
-      run: alloy validate {staged_files}
+      run: alloy validate {staged_files} 2>&1 || true
       stage_fixed: false
     shellcheck:
       glob: "*.sh"

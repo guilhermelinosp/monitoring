@@ -25,6 +25,11 @@ spec:
           runAsNonRoot: true
           seccompProfile:
             type: RuntimeDefault
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         workingDir: /tmp
         args:
         - run
