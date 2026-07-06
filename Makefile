@@ -15,6 +15,7 @@ setup:
 	@command -v yamllint >/dev/null 2>&1 || { echo "Install yamllint: brew install yamllint"; exit 1; }
 	@command -v kustomize >/dev/null 2>&1 || { echo "Install kustomize: brew install kustomize"; exit 1; }
 	@command -v helm >/dev/null 2>&1     || { echo "Install helm: brew install helm"; exit 1; }
+	@command -v gitleaks >/dev/null 2>&1 || { echo "Install gitleaks: brew install gitleaks"; exit 1; }
 	$(info [setup] All tools ready)
 
 # ── Validation ─────────────────────────────────────────────────────────────
@@ -40,12 +41,8 @@ helm-lint:
 	fi
 
 check-secrets:
-	$(info === Secrets Scan ===)
-	@! grep -rEin '(password|secret|token|api_key|private_key)[:=]' \
-		--include='*.yaml' --include='*.yml' --include='*.json' \
-		--include='*.toml' --include='*.sh' \
-		$(ROOT_DIR) \
-		--exclude-dir='.git' --exclude-dir='.github' 2>/dev/null; \
+	$(info === Secrets Scan (gitleaks) ===)
+	gitleaks detect --source $(ROOT_DIR) --no-git -v 2>/dev/null; \
 	true
 
 diff:

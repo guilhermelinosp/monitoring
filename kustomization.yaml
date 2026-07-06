@@ -10,6 +10,8 @@ resources:
   - alloy/rbac.yaml
   - grafana/deployment.yaml
   - grafana/service.yaml
+  - grafana/secret.yaml
+  - grafana/pvc.yaml
   - loki/statefulset.yaml
   - loki/service.yaml
   - prometheus/rbac.yaml

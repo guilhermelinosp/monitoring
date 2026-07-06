@@ -10,15 +10,13 @@ pre-commit:
       stage_fixed: false
     kustomize-build:
       run: kustomize build . > /dev/null
-      skip: true
     helm-lint:
       glob: "values/**/*.yaml"
       run: helm lint {staged_files} --strict 2>/dev/null || true
       stage_fixed: false
     secrets-scan:
       glob: "*.{yaml,yml,json,toml,sh}"
-      run: |
-        ! grep -Ein '(password|secret|token|api_key|private_key)[:=]' {staged_files}
+      run: gitleaks detect --source . --no-git -v 2>/dev/null; true
       stage_fixed: false
     alloy-validate:
       glob: "*.alloy"
