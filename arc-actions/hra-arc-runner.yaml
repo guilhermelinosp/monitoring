@@ -9,6 +9,6 @@ spec:
     name: runner-arc-runner
     kind: RunnerDeployment
   minReplicas: 1
-  maxReplicas: 3
+  maxReplicas: 5
   scaleUpTriggers:
     - duration: 5m
