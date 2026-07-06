@@ -9,6 +9,7 @@ pre-commit:
       run: yamllint {staged_files}
       stage_fixed: false
     kustomize-build:
+      glob: "*.{yaml,yml,alloy}"
       run: kustomize build . > /dev/null
     helm-lint:
       glob: "values/**/*.yaml"
