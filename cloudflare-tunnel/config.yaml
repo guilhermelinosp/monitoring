@@ -1,8 +1,0 @@
-tunnel: a7547e6d-6bbc-4917-a122-dc219fd2ec96
-credentials-file: /root/.cloudflared/a7547e6d-6bbc-4917-a122-dc219fd2ec96.json
-originRequest:
-  noTLSVerify: true
-ingress:
-  - hostname: webhook.hellnet.com.br
-    service: https://192.168.1.240
-  - service: http_status:404
