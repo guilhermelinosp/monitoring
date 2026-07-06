@@ -15,3 +15,21 @@ scrape_configs:
       - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
         action: keep
         regex: true
+
+  - job_name: proxmox-node
+    static_configs:
+      - targets: ['192.168.1.254:9100']
+        labels:
+          host: proxmox
+
+  - job_name: proxmox-postgres
+    static_configs:
+      - targets: ['192.168.1.254:9187']
+        labels:
+          host: proxmox
+
+  - job_name: proxmox-valkey
+    static_configs:
+      - targets: ['192.168.1.254:9121']
+        labels:
+          host: proxmox
