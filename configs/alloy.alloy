@@ -52,16 +52,14 @@ otelcol.receiver.otlp "external" {
 	}
 
 	output {
-		metrics = [otelcol.exporter.prometheusremotewrite.default.input]
+		metrics = [otelcol.exporter.prometheus.default.input]
 		traces  = [otelcol.exporter.otlp.tempo.input]
 	}
 }
 
-// Directly write OTel metrics to Prometheus via remote_write
-otelcol.exporter.prometheusremotewrite "default" {
-	client {
-		url = "http://prometheus.monitoring:9090/api/v1/write"
-	}
+// Convert OTel metrics to Prometheus format and expose on scrape endpoint
+otelcol.exporter.prometheus "default" {
+	forward_to = [prometheus.remote_write.default.receiver]
 }
 
 // ═══════════════════════════════════════════
