@@ -28,7 +28,7 @@ discovery.relabel "metrics_filter" {
 	// DaemonSet: each Alloy only scrapes pods on its own node
 	rule {
 		source_labels = ["__meta_kubernetes_pod_node_name"]
-		regex         = environment("NODE_NAME")
+		regex         = env("NODE_NAME")
 		action        = "keep"
 	}
 }
