@@ -49,15 +49,6 @@ otelcol.receiver.otlp "external" {
 		}
 	}
 
-	// Only forward metrics and traces (OTLP logs not routed to Loki)
-	output {
-		metrics = [otelcol.processor.batch.default.input]
-		traces  = [otelcol.processor.batch.default.input]
-	}
-}
-
-// Batch processor: buffers and batches OTel data before exporting
-otelcol.processor.batch "default" {
 	output {
 		metrics = [otelcol.exporter.prometheus.default.input]
 		traces  = [otelcol.exporter.otlp.tempo.input]
