@@ -13,3 +13,4 @@ GitOps para o stack de observabilidade do cluster.
 
 Push na main → GitHub Action → ArgoCD sync.
 # trigger CI runner
+# runner test 1784167019
