@@ -12,3 +12,4 @@ GitOps para o stack de observabilidade do cluster.
 ## Workflow
 
 Push na main → GitHub Action → ArgoCD sync.
+# trigger CI runner
