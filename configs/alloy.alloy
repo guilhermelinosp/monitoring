@@ -35,12 +35,6 @@ discovery.relabel "metrics_filter" {
 
 // ═══════════════════════════════════════════
 // EXTERNAL INGESTION (OTLP)
-// External apps send metrics/logs/traces via OTLP
-// Endpoint: alloy.hellnet.com.br:4318 (HTTP) or :4317 (gRPC)
-//
-// NOTE: OTLP metrics need otelcol.connector.prometheus to convert
-// from OTel format to Prometheus format before remote_write.
-// OTLP logs are not currently routed to Loki (use Loki SDK directly).
 // ═══════════════════════════════════════════
 otelcol.receiver.otlp "external" {
 	grpc {
@@ -72,7 +66,6 @@ otelcol.exporter.prometheus "default" {
 otelcol.exporter.otlp "tempo" {
 	client {
 		endpoint = "tempo.monitoring:4317"
-
 		tls {
 			insecure = true
 		}
@@ -80,7 +73,7 @@ otelcol.exporter.otlp "tempo" {
 }
 
 // ═══════════════════════════════════════════
-// METRICS
+// METRICS (scraped from Kubernetes pods)
 // ═══════════════════════════════════════════
 prometheus.scrape "default" {
 	targets         = discovery.relabel.metrics_filter.output
@@ -97,7 +90,7 @@ prometheus.remote_write "default" {
 }
 
 // ═══════════════════════════════════════════
-// LOGS
+// LOGS (Kubernetes pod logs)
 // ═══════════════════════════════════════════
 loki.source.kubernetes "all" {
 	targets    = discovery.kubernetes.pods.targets
