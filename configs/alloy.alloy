@@ -34,13 +34,9 @@ discovery.relabel "metrics_filter" {
 }
 
 // ═══════════════════════════════════════════
-// EXTERNAL INGESTION (OTLP)
+// EXTERNAL INGESTION (OTLP HTTP)
 // ═══════════════════════════════════════════
 otelcol.receiver.otlp "external" {
-	grpc {
-		endpoint = "0.0.0.0:4317"
-	}
-
 	http {
 		endpoint = "0.0.0.0:4318"
 
@@ -61,13 +57,13 @@ otelcol.exporter.prometheus "default" {
 	forward_to = [prometheus.remote_write.default.receiver]
 }
 
-// OTLP logs → Loki
+// OTLP logs -> Loki
 otelcol.exporter.loki "default" {
 	forward_to = [loki.write.default.receiver]
 }
 
 // ═══════════════════════════════════════════
-// TRACES → Tempo
+// TRACES -> Tempo
 // ═══════════════════════════════════════════
 otelcol.exporter.otlp "tempo" {
 	client {
