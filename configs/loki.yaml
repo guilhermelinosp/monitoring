@@ -29,9 +29,15 @@ storage_config:
     cache_location: /var/loki/tsdb-shipper-cache
   filesystem:
     directory: /var/loki/chunks
+compactor:
+  retention_enabled: true
+  retention_delete_delay: 2h
+  delete_request_store: filesystem
+  working_directory: /var/loki/compactor
 querier:
   max_concurrent: 8
 limits_config:
   reject_old_samples: false
   ingestion_rate_mb: 10
   ingestion_burst_size_mb: 20
+  retention_period: 168h
