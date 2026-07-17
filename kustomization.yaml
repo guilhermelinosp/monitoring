@@ -9,7 +9,6 @@ resources:
   - alloy/service.yaml
   - alloy/rbac.yaml
   - alloy/httproute-http.yaml
-  - alloy/httproute-grpc.yaml
   - grafana/deployment.yaml
   - grafana/service.yaml
   - grafana/secret.yaml
